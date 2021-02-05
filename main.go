@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"plugin"
 
-	"github.com/smkrishnaOpenSource/tidiness_golang/plugins/configuration"
+	"github.com/bm-krishna/tidiness_golang/plugins/configuration"
 )
 
 func main() {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -14,8 +15,12 @@ type conf struct {
 }
 
 func (c *conf) getConf() *conf {
-
-	yamlFile, err := ioutil.ReadFile("/home/sigma/go/src/github.com/smkrishnaOpenSource/tidiness_golang/core/yaml/conf.yaml")
+	CurrentDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(CurrentDir)
+	yamlFile, err := ioutil.ReadFile(CurrentDir + "/core/yaml/conf.yaml")
 	if err != nil {
 		log.Printf("yamlFile.Get err   #%v ", err)
 	}
@@ -30,6 +35,5 @@ func (c *conf) getConf() *conf {
 func main() {
 	var c conf
 	c.getConf()
-
 	fmt.Println(c)
 }

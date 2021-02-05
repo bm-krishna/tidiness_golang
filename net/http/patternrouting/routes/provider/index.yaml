@@ -1,0 +1,4 @@
+service: provider
+routes: 
+  create: $./create.json
+  update: $./update.json

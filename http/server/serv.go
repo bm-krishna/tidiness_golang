@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/smkrishnaOpenSource/tidiness_golang/http/handlers"
+	"github.com/bm-krishna/tidiness_golang/http/handlers"
 )
 
 func Serve() {
