@@ -1,4 +1,4 @@
 service: provider
-routes: 
+paths: 
   create: $./create.json
   update: $./update.json
