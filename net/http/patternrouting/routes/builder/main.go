@@ -2,8 +2,8 @@ package builder
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
-	"log"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -23,16 +23,16 @@ type Config struct {
 // 	log.Println(routesList)
 // }
 
-func GenerateRoutePattern(relativePath string) []string {
+func GenerateRoutePattern(relativePath string) ([]string, error) {
 	routers := &Config{}
 	filePath := relativePath + "/net/http/patternrouting/routes/provider/index.yaml"
 	fileData, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Fatal("Failed to Read file from path")
+		return nil, errors.New("Failed to Read File path config" + err.Error())
 	}
 	err = yaml.Unmarshal(fileData, routers)
 	if err != nil {
-		log.Fatal("Failed to unmarshal routes data")
+		return nil, errors.New("Failed to unmarshal routes data" + err.Error())
 	}
 
 	routes := routers.Routes
@@ -41,20 +41,19 @@ func GenerateRoutePattern(relativePath string) []string {
 		// get json file path froRegexm Routers
 		buildPathByusingRex := strings.ReplaceAll(filePathConfig.(string), "$.", "")
 		readRouteConfig := relativePath + "/net/http/patternrouting/routes/provider" + buildPathByusingRex
-		log.Println(readRouteConfig, "readRouteConfig")
 		routeFileData, err := ioutil.ReadFile(readRouteConfig)
 		if err != nil {
-			log.Fatal("Failed to read route config form provider")
+			return nil, errors.New("Failed to read route config form provider" + err.Error())
 		}
 		var routeConfig map[string]string
 		err = json.Unmarshal(routeFileData, &routeConfig)
 		if err != nil {
-			log.Fatal("Failed to unmarshal route data info")
+			return nil, errors.New("Failed to unmarshal route data info" + err.Error())
 		}
 		path, found := routeConfig["path"]
 		if found {
 			buildroutes = append(buildroutes, path)
 		}
 	}
-	return buildroutes
+	return buildroutes, nil
 }

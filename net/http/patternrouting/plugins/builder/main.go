@@ -14,7 +14,7 @@ type Config struct {
 }
 
 func PluginsBuilder(relativePath string) (map[string]string, error) {
-	configData, err := ioutil.ReadFile(relativePath + "/net/http/patternrouting/handlers/provider/index.yaml")
+	configData, err := ioutil.ReadFile(relativePath + "/net/http/patternrouting/plugins/provider/index.yaml")
 	if err != nil {
 		log.Fatal("Faild to Read Plugins config")
 		return nil, err

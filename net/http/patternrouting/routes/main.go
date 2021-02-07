@@ -1,17 +1,18 @@
 package routes
 
 import (
+	"errors"
 	"log"
-	"os"
 
 	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/routes/builder"
 )
 
-func main() {
-	relaivePath, err := os.Getwd()
+func Service(relativePath string) ([]string, error) {
+	log.Println(relativePath, "Routes")
+	routesList, err := builder.GenerateRoutePattern(relativePath)
 	if err != nil {
-		log.Fatal("Failed to read relative path")
+		return nil, errors.New("Failed to Fetch Routers Config" + err.Error())
 	}
-	routesList := builder.GenerateRoutePattern(relaivePath)
 	log.Println(routesList)
+	return routesList, nil
 }
