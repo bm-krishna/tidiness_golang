@@ -49,12 +49,12 @@ var customHeaders = map[string]string{
 func (hs *HandlerService) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	hs.mu.Lock()
 	defer hs.mu.Unlock()
-	// res = HeaderBuilder(customHeaders, res)
+	res = HeaderBuilder(customHeaders, res)
 	routes, pluginsRoutesMapper := PluginsRoutesProvider()
 	validRouter := false
 	URL := strings.ReplaceAll(req.URL.Path, "/", "")
 	// set Headers
-	res.Header().Set("Content-Type", "application/json")
+	// res.Header().Set("Content-Type", "application/json")
 	for _, route := range routes {
 		if route == URL {
 			validRouter = true
