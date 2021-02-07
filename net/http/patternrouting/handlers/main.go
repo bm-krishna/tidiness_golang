@@ -3,12 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
 
+	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/plugins"
 	pluginsBuilder "github.com/bm-krishna/tidiness_golang/net/http/patternrouting/plugins/builder"
 	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/routes/builder"
 )
@@ -102,5 +104,17 @@ func (hs *HandlerService) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 		res.Write(pluginNotFoundJSON)
 		return
 	}
-	json.NewEncoder(res).Encode(pluginConfig)
+	// json.NewEncoder(res).Encode(pluginConfig)
+
+	payload, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		res.Write([]byte("Failed to Read Body" + err.Error()))
+		return
+	}
+	resData, err := plugins.Service(payload, pluginConfig)
+	if err != nil {
+		res.Write([]byte("Faild to Process the request " + err.Error()))
+		return
+	}
+	res.Write(resData)
 }

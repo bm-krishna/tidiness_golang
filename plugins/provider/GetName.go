@@ -6,7 +6,7 @@ import (
 )
 
 func Main() ([]byte, error) {
-	fmt.Println("main in plugins")
+	// fmt.Println("main in plugins")
 	details := map[string]string{
 		"name": "mohan",
 	}

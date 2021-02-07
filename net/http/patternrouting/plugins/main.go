@@ -1,12 +1,9 @@
 package plugins
 
-func Service(relativePath string) (map[string]string, error) {
-	// routesPlugnsMapperConfig, err := builder.PluginsConfigValidator(relativePath)
-	// if err != nil {
-	// 	return nil, errors.New("Failed to build PluginsBuilder" + err.Error())
-	// }
-	// return routesPlugnsMapperConfig, nil
-	return nil, nil
+import "github.com/bm-krishna/tidiness_golang/net/http/patternrouting/plugins/builder"
+
+func Service(payload []byte, path string) ([]byte, error) {
+	return builder.PluginsBuilder(payload, path)
 }
 
 // package handlers
