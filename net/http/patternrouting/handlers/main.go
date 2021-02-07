@@ -21,7 +21,7 @@ type ResourceNotFound struct {
 	Status  int
 }
 
-func PluginsRoutesProvider() ([]string, map[string]string, error) {
+func PluginsRoutesConfigProvider() ([]string, map[string]string, error) {
 	relativePath, err := os.Getwd()
 	if err != nil {
 		log.Fatal("Failed to get relative path")
@@ -54,7 +54,7 @@ func (hs *HandlerService) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 	hs.mu.Lock()
 	defer hs.mu.Unlock()
 	res = HeaderBuilder(customHeaders, res)
-	routes, pluginsRoutesMapper, err := PluginsRoutesProvider()
+	routes, pluginsRoutesMapper, err := PluginsRoutesConfigProvider()
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
 
