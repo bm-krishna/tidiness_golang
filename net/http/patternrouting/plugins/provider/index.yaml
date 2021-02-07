@@ -1,4 +1,3 @@
 service: provider
 paths: 
   create: $./create.json
-  update: $./update.json
