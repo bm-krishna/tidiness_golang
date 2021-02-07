@@ -2,14 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
 
-	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/plugins"
-	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/routes"
+	pluginsBuilder "github.com/bm-krishna/tidiness_golang/net/http/patternrouting/plugins/builder"
+	"github.com/bm-krishna/tidiness_golang/net/http/patternrouting/routes/builder"
 )
 
 type HandlerService struct {
@@ -20,18 +21,21 @@ type ResourceNotFound struct {
 	Status  int
 }
 
-func PluginsRoutesProvider() ([]string, map[string]string) {
+func PluginsRoutesProvider() ([]string, map[string]string, error) {
 	relativePath, err := os.Getwd()
 	if err != nil {
 		log.Fatal("Failed to get relative path")
 	}
-	// fetch plugins and routes config
-	pluginsRoutesMapper, err := plugins.Service(relativePath)
+
+	pluginsRoutesMapper, err := pluginsBuilder.PluginsConfigProvider(relativePath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, errors.New("Failde to Fetch Plugins config" + err.Error())
 	}
-	routesConfig, err := routes.Service(relativePath)
-	return routesConfig, pluginsRoutesMapper
+	routesConfig, err := builder.RoutesConfigProvider(relativePath)
+	if err != nil {
+		return nil, nil, errors.New("Failde to Fetch Routes config" + err.Error())
+	}
+	return routesConfig, pluginsRoutesMapper, nil
 }
 func HeaderBuilder(headers map[string]string, resp http.ResponseWriter) http.ResponseWriter {
 	httpHeader := resp.Header()
@@ -50,7 +54,13 @@ func (hs *HandlerService) ServeHTTP(res http.ResponseWriter, req *http.Request) 
 	hs.mu.Lock()
 	defer hs.mu.Unlock()
 	res = HeaderBuilder(customHeaders, res)
-	routes, pluginsRoutesMapper := PluginsRoutesProvider()
+	routes, pluginsRoutesMapper, err := PluginsRoutesProvider()
+	if err != nil {
+		res.WriteHeader(http.StatusNotFound)
+
+		res.Write([]byte(err.Error()))
+		return
+	}
 	validRouter := false
 	URL := strings.ReplaceAll(req.URL.Path, "/", "")
 	// set Headers

@@ -13,7 +13,11 @@ type Config struct {
 	Paths   map[string]string `yaml:paths`
 }
 
-func PluginsBuilder(relativePath string) (map[string]string, error) {
+func PluginsBuilder(relativePath string) {
+
+}
+
+func PluginsConfigProvider(relativePath string) (map[string]string, error) {
 	configData, err := ioutil.ReadFile(relativePath + "/net/http/patternrouting/plugins/provider/index.yaml")
 	if err != nil {
 		return nil, errors.New("Faild to Read Plugins config" + err.Error())
