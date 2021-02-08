@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"os/exec"
 	"plugin"
 	"strings"
 
@@ -15,7 +17,29 @@ type Config struct {
 	Paths   map[string]string `yaml:paths`
 }
 
+func PluginsCompiler(path string) error {
+	path = strings.ReplaceAll(path, ".json", "")
+	destinationPath := path + "/main.so"
+	pluginPath := path + "/main.go"
+	fmt.Println(destinationPath)
+	fmt.Println(pluginPath)
+	command := "go build -buildmode=plugin -o " + destinationPath + " " + pluginPath
+	cmd := exec.Command(command)
+	result, err := cmd.Output()
+	if err != nil {
+		fmt.Println("in plugins Compiler")
+		return errors.New("Failed to Compile Plugins" + err.Error())
+	}
+	output := string(result[:])
+	log.Println(output)
+	return nil
+}
 func PluginsBuilder(payload []byte, path string) ([]byte, error) {
+	// compile code
+	err := PluginsCompiler(path)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
 	pluginPath := strings.ReplaceAll(path, ".json", "")
 	pl, err := plugin.Open(pluginPath + "/main.so")
 	if err != nil {
