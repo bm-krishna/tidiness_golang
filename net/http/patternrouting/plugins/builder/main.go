@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os/exec"
 	"plugin"
 	"strings"
@@ -25,13 +24,11 @@ func PluginsCompiler(path string) error {
 	fmt.Println(pluginPath)
 	command := "go build -buildmode=plugin -o " + destinationPath + " " + pluginPath
 	cmd := exec.Command(command)
-	result, err := cmd.Output()
+	err := cmd.Run()
 	if err != nil {
 		fmt.Println("in plugins Compiler")
 		return errors.New("Failed to Compile Plugins" + err.Error())
 	}
-	output := string(result[:])
-	log.Println(output)
 	return nil
 }
 func PluginsBuilder(payload []byte, path string) ([]byte, error) {

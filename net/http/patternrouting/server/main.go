@@ -13,7 +13,7 @@ func BootStrapServer() {
 	handler := &handlers.HandlerService{}
 	// set up server
 	server := &http.Server{
-		Addr:           ":8080",
+		Addr:           ":4444",
 		Handler:        handler,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
